@@ -1,4 +1,4 @@
 streamlit==0.79.0
 numpy==1.19.2
-pandas==3.8.8
+pandas==1.2.3
 pyautogui==0.9.52
