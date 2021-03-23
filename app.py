@@ -2,6 +2,13 @@ import streamlit as st
 import pandas as pd
 from streamlit.hashing import _CodeHasher
 from data.create_data import create_table
+import time
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email.mime.image import MIMEImage
+import smtplib
+import pyautogui
 
 st.set_page_config(layout="wide")
                                   
@@ -16,6 +23,7 @@ except ModuleNotFoundError:
     from streamlit.server.server import Server
 
 
+print('1')
 def main():
     state = _get_state()
     pages = {
@@ -24,11 +32,17 @@ def main():
     }
 
     st.sidebar.title("TeraBeer :beer:")
+    
+    # if st.button('Iniciar Pesquisa'):
+    #     global page 
+    #     page = 'Pesquisa'
+    #     pages[page](state)
+    #     print(2)
     page = st.sidebar.selectbox("Selecione uma opção", tuple(pages.keys()))
 
     # Display the selected page with the session state
     pages[page](state)
-
+    print(page)
     # Mandatory to avoid rollbacks with widgets, must be called at the end of your app
     state.sync()
 
@@ -77,15 +91,20 @@ def display_pesquisa(state):
     feat_paladar['Cerveja Sour'] =  st.radio('Fruit Beer/Sour', [' ', 'Gosto', 'Não gosto', 'Indiferente', 'Desconheço'])
     feat_paladar['Cerveja RIS'] =  st.radio('Russian Imperial Stout/Pastry Stout', [' ', 'Gosto', 'Não gosto', 'Indiferente', 'Desconheço'])
     feat_paladar['Cerveja Lambic'] =  st.radio('Lambic', [' ', 'Gosto', 'Não gosto', 'Indiferente', 'Desconheço'])
-    df_paladar = pd.DataFrame([feat_paladar])
-    st.dataframe(df_paladar)
-    df_paladar.to_csv('./data/teste.csv')	
-    print(df_paladar)
-    
-# def page_pesquisa(state):
-#     st.title(":beer: Pesquisa")
-#     display_pesquisa(state)
 
+    
+    if st.button('Sugestões'):
+        df_paladar = pd.DataFrame([feat_paladar])
+        st.dataframe(df_paladar)
+        df_paladar.to_csv('./data/teste.csv')
+        print(df_paladar)
+    
+        
+        with st.spinner(text = 'Por favor aguarde, estamos analisando...'):
+            time.sleep(5)
+            st.success('Pronto, já pode ir para pagina de Sugestoes')
+        print(1)
+ 
 
 def display_sugestoes(state):
     
@@ -150,6 +169,14 @@ def display_sugestoes(state):
         st.subheader(tres_opcoes.iloc[2][2])
         st.markdown('##### IBU:')
         st.subheader(tres_opcoes.iloc[2][3])
+        
+        
+    email = st.text_input('Para receber sugestoões entre com seu email:')
+    if st.button('Enviar por email'):
+        screenshot()
+        enviar_email(email)
+        
+       
         
 class _SessionState:
 
@@ -225,6 +252,42 @@ def _get_state(hash_funcs=None):
         session._custom_session_state = _SessionState(session, hash_funcs)
 
     return session._custom_session_state
+
+def screenshot():
+    sugestao = pyautogui.screenshot()
+    sugestao.save('D:/Downloads/screenshot/sugestao.png')
+        
+def enviar_email(email):
+    
+    # Define the source and target email address.
+    strFrom = 'sugestoesterabeer@gmail.com'
+    sender_pass = 'TeraBeer2021'
+    strTo = email
+            
+           
+    # Create an instance of MIMEMultipart object, pass 'related' as the constructor parameter.
+    menssage = MIMEMultipart('related')
+    menssage['Subject'] = 'Recomendações TeraBeer'
+    menssage['From'] = strFrom
+    menssage['To'] = strTo
+            
+    msgText = MIMEText('<b>Esta é a sua recomendação:<br><img src="cid:image1"><br>', 'html')
+    # Attach the above html content MIMEText object to the menssage object.
+    menssage.attach(msgText)
+    fp = open('D:/Downloads/screenshot/sugestao.png', 'rb')
+    msgImage = MIMEImage(fp.read())
+    fp.close()
+            
+    msgImage.add_header('Content-ID', '<image1>')
+    menssage.attach(msgImage)
+
+            
+    # Create an smtplib.SMTP object to send the email.
+    smtp = smtplib.SMTP('smtp.gmail.com', 587)
+    smtp.starttls() #enable security
+    smtp.login(strFrom, sender_pass)
+    smtp.sendmail(strFrom, strTo, menssage.as_string())
+    smtp.quit()
 
 
 if __name__ == "__main__":
