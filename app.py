@@ -8,7 +8,7 @@ from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email.mime.image import MIMEImage
 import smtplib
-import pyautogui
+import pyscreenshot as ImageGrab
 
 st.set_page_config(layout="wide")
                                   
@@ -254,7 +254,9 @@ def _get_state(hash_funcs=None):
     return session._custom_session_state
 
 def screenshot():
-    sugestao = pyautogui.screenshot()
+    
+    sugestao = ImageGrab.grab(bbox=(390, 140, 1850, 890))
+    # sugestao = pyautogui.screenshot()
     sugestao.save('D:/Downloads/screenshot/sugestao.png')
         
 def enviar_email(email):
