@@ -11,7 +11,12 @@ import smtplib
 import pyscreenshot as ImageGrab
 
 st.set_page_config(layout="wide")
-                                  
+# st.set_option(primaryColor="#f63366",
+#                      backgroundColor="#0e1117",
+#                      secondaryBackgroundColor="#31333F", 
+#                      textColor="#fafafa",
+#                      font="sans serif")
+          
 
 try:
     # Before Streamlit 0.65
@@ -130,12 +135,12 @@ def display_sugestoes(state):
 
     
     st.subheader(estilo1)
-    st.text_area('',tres_opcoes.iloc[0][6])
+    st.text_area('Descrição do Estilo',tres_opcoes.iloc[0][6])
     
-    c1, c2, c3, = st.beta_columns((1, 1, 1))
+    c1, c2, c3= st.beta_columns((1, 1, 1))
     
     with c1:  ### Opçao 01
-        file = './fig/' + tres_opcoes.iloc[0][7]
+        file = './fig/' + tres_opcoes.iloc[0][8]
         st.image(file)
         st.markdown("##### Cerveja:")
         st.subheader(tres_opcoes.iloc[0][0])
@@ -145,9 +150,11 @@ def display_sugestoes(state):
         st.subheader(tres_opcoes.iloc[0][2])
         st.markdown('##### IBU:')
         st.subheader(tres_opcoes.iloc[0][3])
+        st.text_area('Descrição da Cerverja: ',tres_opcoes.iloc[0][7],  height=200)
+    
     
     with c2:      ### Opçao 02  
-        file = './fig/' + tres_opcoes.iloc[1][7]
+        file = './fig/' + tres_opcoes.iloc[1][8]
         st.image(file)
         st.markdown("##### Cerveja:")
         st.subheader(tres_opcoes.iloc[1][0])
@@ -157,9 +164,10 @@ def display_sugestoes(state):
         st.subheader(tres_opcoes.iloc[1][2])
         st.markdown('##### IBU:')
         st.subheader(tres_opcoes.iloc[1][3])
-    
+        st.text_area('Descrição da Cerverja: ',tres_opcoes.iloc[1][7], height=200)
+                     
     with c3:   ### Opçao 02
-        file = './fig/' + tres_opcoes.iloc[2][7]
+        file = './fig/' + tres_opcoes.iloc[2][8]
         st.image(file)
         st.markdown("##### Cerveja:")
         st.subheader(tres_opcoes.iloc[2][0])
@@ -169,7 +177,7 @@ def display_sugestoes(state):
         st.subheader(tres_opcoes.iloc[2][2])
         st.markdown('##### IBU:')
         st.subheader(tres_opcoes.iloc[2][3])
-        
+        st.text_area('Descrição da Cerverja: ',tres_opcoes.iloc[2][7], height=200)
         
     email = st.text_input('Para receber sugestoões entre com seu email:')
     if st.button('Enviar por email'):
@@ -263,7 +271,7 @@ def enviar_email(email):
     
     # Define the source and target email address.
     strFrom = 'sugestoesterabeer@gmail.com'
-    sender_pass = '******'
+    sender_pass = 'TeraBeer2021'
     strTo = email
             
            
