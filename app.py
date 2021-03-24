@@ -271,7 +271,7 @@ def enviar_email(email):
     
     # Define the source and target email address.
     strFrom = 'sugestoesterabeer@gmail.com'
-    sender_pass = 'TeraBeer2021'
+    sender_pass = '********'
     strTo = email
             
            
